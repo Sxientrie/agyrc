@@ -17,7 +17,8 @@ agyrc/
 ├── rules/             # Global agent behavior rules
 │   └── AGENTS.md      # Communication style, device info, ACL config
 ├── docs/              # Guides and references
-│   └── ADDING_SKILLS.md
+│   ├── ADDING_SKILLS.md
+│   └── TOOL_REFERENCE.md
 ├── install.sh         # Symlink installer
 ├── .gitignore
 └── README.md
