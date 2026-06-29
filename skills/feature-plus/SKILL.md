@@ -312,11 +312,5 @@ if all criteria passed.>
 Notify the user:
 
 ```bash
-termux-notification \
-  --title "Feature-Plus Complete" \
-  --content "<count> feature(s) built and verified." \
-  --button1 "Open Report" \
-  --button1-action "termux-open <appDataDir>/brain/<conversation-id>/feature_plus_report.md"
-
-
-
+termux-toast -s -g bottom "Feature-Plus Complete — report is ready."
+```

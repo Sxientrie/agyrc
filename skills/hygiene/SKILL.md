@@ -276,10 +276,9 @@ with explanation. Omit section if nothing was deferred.>
 to the codebase, and what to tackle next run.>
 ```
 
-Notify the user by vibrating the device and showing a toast.
+Notify the user by showing a toast.
 
 ```bash
-termux-vibrate -d 100
 termux-toast -s -g bottom "Hygiene Complete — report is ready."
 ```
 
@@ -288,6 +287,6 @@ termux-toast -s -g bottom "Hygiene Complete — report is ready."
 ## Phase 6 — Completion: Notify and close
 
 ```bash
-termux-vibrate -d 100
 termux-toast -s -g bottom "Hygiene done — codebase left cleaner than found."
 ```
+

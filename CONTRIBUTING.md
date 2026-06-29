@@ -16,7 +16,7 @@ Complete guide to creating, structuring, and installing a skill for the Antigrav
 6. [Output and Reporting](#6-output-and-reporting)
 7. [Scope Resolution](#7-scope-resolution)
 8. [Error Handling](#8-error-handling)
-9. [Mobile UX & Notifications](#9-mobile-ux--notifications)
+9. [Mobile UX & Toasts](#9-mobile-ux--toasts)
 10. [Install and Test](#10-install-and-test)
 11. [Update the README](#11-update-the-readme)
 12. [Checklist](#12-checklist)
@@ -465,19 +465,17 @@ Don't silently retry more than once.
 
 ---
 
-## 9. Mobile UX & Notifications
+## 9. Mobile UX & Toasts
 
-On Android/Termux, long-running tasks benefit from native completion notifications. Guide the agent to use Termux's built-in CLI tools when finishing long tasks:
+On Android/Termux, long-running tasks benefit from native completion alerts. Guide the agent to use Termux's toast mechanism to notify the user upon completion:
 
-- **Haptic Feedback**: Use `termux-vibrate -d 100` to vibrate the device upon completion.
 - **Toasts**: Use `termux-toast -s -g bottom "Message"` for transient toast popups.
-- **Status Bar Notification**: Use `termux-notification --title "Title" --content "body"` for background alerting.
+- **Vibration & Notifications**: Do not use vibration (`termux-vibrate`) or status bar alerts (`termux-notification`) to avoid clutter and noise.
 
 #### Example Instruction:
 ```markdown
 ## Phase 6 — Completion
 Alert the user that the run is complete:
-termux-vibrate -d 100
 termux-toast -s -g bottom "Hygiene checks completed successfully."
 ```
 
