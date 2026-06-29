@@ -37,6 +37,6 @@ These apply to every task on this device — no need to open a sub-skill for the
 - `$HOME` = `/data/data/com.termux/files/home`
 - Binaries live in `$PREFIX/bin/` — `/usr/bin`, `/etc`, `/usr/lib` do not exist
 - Package manager: `pkg install` — never `apt` directly
-- Shell: bash · config: `~/.bashrc`
+- Shell: zsh · config: `~/.zshrc`
 - SELinux is **Enforcing** — unexpected failures may be policy denials, not bugs
 - No external SD card — internal storage only

@@ -16,9 +16,10 @@ Complete guide to creating, structuring, and installing a skill for the Antigrav
 6. [Output and Reporting](#6-output-and-reporting)
 7. [Scope Resolution](#7-scope-resolution)
 8. [Error Handling](#8-error-handling)
-9. [Install and Test](#9-install-and-test)
-10. [Update the README](#10-update-the-readme)
-11. [Checklist](#11-checklist)
+9. [Mobile UX & Notifications](#9-mobile-ux--notifications)
+10. [Install and Test](#10-install-and-test)
+11. [Update the README](#11-update-the-readme)
+12. [Checklist](#12-checklist)
 
 ---
 
@@ -44,68 +45,73 @@ Every skill **must** have a `SKILL.md` file. It has two parts: frontmatter and b
 ---
 name: my-skill
 description: >
-  One paragraph describing what this skill does and when it activates.
-  Keep it under 3 sentences. This text is what the agent uses to decide
-  whether to load the skill, so be specific.
+  One concise paragraph describing what this skill does and when it activates.
+  This text is what the agent uses to decide whether to load the skill.
+  Make it specific and assertive, as vague descriptions won't trigger reliably.
 ---
 ```
 
 | Field | Required | Notes |
 |-------|----------|-------|
 | `name` | ✅ | Must exactly match the directory name |
-| `description` | ✅ | **Trigger-matched** — the agent reads this to decide whether to load the skill. Vague descriptions (e.g., "helps with code") won't trigger reliably. Be specific about what it does and when it activates |
+| `description` | ✅ | **Trigger-matched** — the agent reads this to decide whether to load the skill. Be specific about the domain, trigger keywords, and expected workflow |
 
 ### Body (Markdown)
 
-The body is loaded **only after** the skill triggers. Structure it like this:
+The body is loaded **only after** the skill triggers. We recommend a **Phase-based execution structure**, which is the convention used by the main skills on this platform.
+
+#### Recommended Phase-based Scaffold
+
+Use this phase-based template for complex or multi-step workflows:
 
 ```markdown
 # /my-skill — Descriptive Title
+
+## Phase 1 — Pre-flight: Context Gathering
+- Check for global rules files (e.g., `./AGENTS.md` or `~/.gemini/AGENTS.md`) using `view_file` to absorb project guidelines.
+- Scan directory structure or run baseline command checks before planning work.
+
+## Phase 2 — Routing & Focus Selection
+- Map any command-line arguments to specific sub-tasks or focus areas.
+- If no arguments are provided, use `ask_question` to let the user select the desired mode or tasks.
+
+## Phase 3 — Execution: Sub-skill / Core Logic
+- Read the instructions for the selected sub-task or sub-skill from its file.
+- Perform the core actions (code generation, refactoring, analysis, etc.).
+
+## Phase 4 — Verification & Safety
+- Run the test suite or compile/lint checks to verify changes.
+- Revert or log any failures.
+
+## Phase 5 — Delivery & Reporting
+- Generate the final markdown report and write it to the artifact location.
+- Notify the user of completion.
+```
+
+#### Minimal Alternative Template
+
+For simple, single-step utility skills, a flat structure is also acceptable:
+
+```markdown
+# /my-skill — Title
 
 ## Purpose
 What problem does this solve? One paragraph max.
 
 ## Activation & Trigger
-How does the user trigger it?
-- Slash command: `/my-skill [args]`
-- Automatic: describe the conditions
-- Both: specify which
-
-### Input Matrix
-| User input | Behavior |
-|---|---|
-| `/my-skill` (no args) | Show picker or run default |
-| `/my-skill <specific>` | Run that specific thing |
-| `/my-skill all` | Run everything |
+How is the skill triggered (e.g. `/my-skill` command or automatic semantic matching)?
 
 ## Scope Resolution
-What code / files does this skill operate on?
-(See Section 7 below for guidance)
+Define how the agent determines which files/directories to operate on.
 
 ## Steps
-1. First thing the agent does
-2. Second thing
-3. ...
-
-## Output Format
-What the report / result looks like.
-(See Section 6 below for guidance)
-
-## Interactive Follow-up
-What happens after the skill finishes?
-(See Section 5 below for guidance)
+1. First action
+2. Second action
+3. Final cleanup
 
 ## Hard Rules
-- Non-negotiable constraints
-- Things the skill must never do
-- Quality bars it must meet
+- Non-negotiable constraints or limits.
 ```
-
-### Size Limit
-
-Keep `SKILL.md` under **500 lines**. If you need more:
-- Move detailed sub-instructions into sub-files (`focus/`, `tasks/`, `references/`)
-- The agent reads sub-files on demand, so they don't waste tokens when unused
 
 ---
 
@@ -241,20 +247,35 @@ Skills should be interactive, not fire-and-forget. Here's how to interact with t
 
 ### Asking the User to Choose
 
-Use `ask_question` whenever there's a fixed set of options:
+Use `ask_question` whenever there's a fixed set of options. The tool requires a specific JSON payload format. Always show the agent an explicit payload example in your skill file.
 
+#### Payload Example in Skill:
 ```markdown
-## Activation
-If the user types `/my-skill` with no arguments, show a picker:
+Present an `ask_question` picker with this payload:
+{
+  "questions": [
+    {
+      "question": "What task would you like to run?",
+      "options": [
+        "(Recommended) Run all checks",
+        "Run formatting only",
+        "Skip checks"
+      ],
+      "is_multi_select": false
+    }
+  ],
+  "toolSummary": "Task Selection",
+  "toolAction": "Selecting check task"
+}
+```
 
-Present an `ask_question` multi-select with these options:
-1. Option A — brief description
-2. Option B — brief description
-3. Option C — brief description
-4. Run all
+#### Guidelines for the Payload:
+- **`is_multi_select`**: Set `true` to render checkboxes (allowing the user to select multiple options), or `false` to render radio buttons (single selection).
+- **Options style**: Prefix the recommended option with `(Recommended)` and put it first. Format options as the user's direct response (e.g., "Run all checks", not "Runs check").
+- **No Manual Numbers**: Do not number the options in the array; the UI handles numbering.
+- **No 'Other' Option**: Do not add an "Other" option; the UI provides one automatically.
 
 If the user skips (selects nothing), abort with a one-line message.
-```
 
 **When to use `ask_question`:**
 - User needs to pick from a fixed set (lenses, tasks, files, options)
@@ -301,16 +322,26 @@ If the user selects nothing, end gracefully with a one-line message.
 
 ### Use Artifacts for Reports
 
-Skills that produce substantial output (reports, analysis, findings) should write to an **artifact** — a markdown file in the agent's artifact directory.
+Skills that produce substantial output (reports, analysis, findings) should write to a dedicated **artifact** — a markdown file stored in the agent's conversation log directory.
 
-Instruct the agent to create the artifact with `write_to_file` and set `ArtifactMetadata`:
+#### Path Convention
+Instruct the agent to write the file using the following placeholder path:
+`Path: <appDataDir>/brain/<conversation-id>/your_filename.md`
 
+#### Resolution at Runtime
+The agent's runtime environment automatically resolves `<appDataDir>` and `<conversation-id>` dynamically based on the current session. The skill author must use these exact literal strings as placeholders in the instructions.
+
+#### Example Instruction:
 ```markdown
 ## Report Assembly
-Produce one artifact using `write_to_file` with:
-- `ArtifactMetadata.UserFacing`: true
-- `ArtifactMetadata.Summary`: description of the report
-- `ArtifactMetadata.RequestFeedback`: true (if the user should act on it)
+Write the final report using the `write_to_file` tool.
+Path: `<appDataDir>/brain/<conversation-id>/hygiene_report.md`
+Payload:
+{
+  "Summary": "Code hygiene report — findings and verification results.",
+  "UserFacing": true,
+  "RequestFeedback": false
+}
 ```
 
 ### Structured Findings
@@ -434,7 +465,25 @@ Don't silently retry more than once.
 
 ---
 
-## 9. Install and Test
+## 9. Mobile UX & Notifications
+
+On Android/Termux, long-running tasks benefit from native completion notifications. Guide the agent to use Termux's built-in CLI tools when finishing long tasks:
+
+- **Haptic Feedback**: Use `termux-vibrate -d 100` to vibrate the device upon completion.
+- **Toasts**: Use `termux-toast -s -g bottom "Message"` for transient toast popups.
+- **Status Bar Notification**: Use `termux-notification --title "Title" --content "body"` for background alerting.
+
+#### Example Instruction:
+```markdown
+## Phase 6 — Completion
+Alert the user that the run is complete:
+termux-vibrate -d 100
+termux-toast -s -g bottom "Hygiene checks completed successfully."
+```
+
+---
+
+## 10. Install and Test
 
 ### Install via Script
 
@@ -453,13 +502,19 @@ ln -s ~/Projects/agyrc/skills/my-skill ~/.gemini/config/skills/my-skill
 
 ### Test the Trigger
 
-1. Open a new Antigravity conversation
-2. Type your slash command (e.g., `/my-skill`)
-3. Verify the agent loads the skill and follows its instructions
+#### Slash Command Triggers
+1. Open a new Antigravity conversation.
+2. Type your slash command (e.g., `/my-skill`).
+3. Verify the agent loads the skill and follows its instructions.
 4. Test edge cases:
    - No arguments → should show picker or run default
    - Specific argument → should run that specific thing
    - Invalid argument → should handle gracefully
+
+#### Semantic/Automatic Triggers (e.g., `termux-device`)
+1. Ask a question or request a task that naturally relates to the skill's description (e.g., "tell me about my device's specs").
+2. Check the model's loaded skills log or response to verify the skill was activated.
+3. If it doesn't load, refine the YAML frontmatter description to include more explicit keyword association.
 
 ### Dry Run
 
@@ -467,7 +522,7 @@ Use `./install.sh --check` to see what would be symlinked without changing anyth
 
 ---
 
-## 10. Update the README
+## 11. Update the README
 
 Add a row to the skill table in [`README.md`](README.md):
 
@@ -479,7 +534,7 @@ Also update the directory tree if you added new subdirectories.
 
 ---
 
-## 11. Checklist
+## 12. Checklist
 
 Before committing a new skill, verify:
 

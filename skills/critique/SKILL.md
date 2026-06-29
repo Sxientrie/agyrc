@@ -2,9 +2,9 @@
 name: critique
 description: >
   Structured, focused code critique bundle. Activate when the user runs
-  /critique [optional focus text]. Covers five lenses: Correctness, Design,
-  Safety, Maintainability, and Performance — each as a focused sub-skill.
-  Runs one lens, many, or all depending on the argument or user selection.
+  /critique [optional focus text]. Covers six lenses: Correctness, Design,
+  Safety, Maintainability, Performance, and Observability — each as a focused
+  sub-skill. Runs one lens, many, or all depending on the argument or user selection.
   Never runs blind — always resolves focus before starting work. After
   delivering the report, interactively asks the user which findings to address.
 ---
