@@ -16,13 +16,34 @@ agyrc/
 │   └── termux-device/ # Device-specific Termux/Android reference
 ├── rules/             # Global agent behavior rules
 │   └── AGENTS.md      # Communication style, device info, ACL config
-├── tools/             # Platform tools documentation
-│   └── tools-ref.md
+├── tools/             # Platform tools and guide documentation
+│   ├── tools-ref.md   # Core Antigravity platform tool reference
+│   └── antigravity-guide/ # Copy of built-in guide & sitemap
 ├── CONTRIBUTING.md    # Guide to adding new skills
 ├── install.sh         # Symlink installer
 ├── .gitignore
 └── README.md
 ```
+
+---
+
+## Reference Documentation & Guides
+
+This repository includes copies of the core documentation for the Antigravity platform:
+- **[Antigravity Agent Tool Reference](tools/tools-ref.md)**: Full guide to the 19 native tools (params, usage, ACL behavior).
+- **[Antigravity Guide & Sitemap](tools/antigravity-guide/SKILL.md)**: Sitemap and guide files for different platform surfaces:
+  - [Antigravity CLI (TUI, config, shortcuts)](tools/antigravity-guide/references/cli.md)
+  - [Antigravity IDE (panels, code lenses)](tools/antigravity-guide/references/ide.md)
+  - [Antigravity 2.0 (desktop app, Aux Pane)](tools/antigravity-guide/references/app.md)
+  - [Antigravity SDK (Python orchestration API)](tools/antigravity-guide/references/sdk.md)
+
+### Official Live Docs Sitemap
+For the most up-to-date information, use these official reference pages:
+- [Main Documentation Home](https://antigravity.google/docs)
+- [Skills System](https://antigravity.google/docs/skills)
+- [Rules Configuration](https://antigravity.google/docs/rules)
+- [Model Context Protocol (MCP)](https://antigravity.google/docs/mcp)
+- [Agent Permissions & Security](https://antigravity.google/docs/agent-permissions)
 
 ---
 
