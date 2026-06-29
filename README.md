@@ -16,8 +16,8 @@ agyrc/
 │   └── termux-device/ # Device-specific Termux/Android reference
 ├── rules/             # Global agent behavior rules
 │   └── AGENTS.md      # Communication style, device info, ACL config
-├── references/        # Platform reference docs
-│   └── TOOL_REFERENCE.md
+├── tools/             # Platform tools documentation
+│   └── tools-ref.md
 ├── CONTRIBUTING.md    # Guide to adding new skills
 ├── install.sh         # Symlink installer
 ├── .gitignore

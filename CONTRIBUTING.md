@@ -2,7 +2,7 @@
 
 Complete guide to creating, structuring, and installing a skill for the Antigravity agent platform.
 
-> For the full list of tools the agent can use inside skills, see [TOOL_REFERENCE.md](references/TOOL_REFERENCE.md).
+> For the full list of tools the agent can use inside skills, see [tools-ref.md](tools/tools-ref.md).
 
 ---
 
