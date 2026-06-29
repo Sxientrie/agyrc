@@ -20,8 +20,6 @@ Read the sub-skill that matches the task:
 - **Termux:API commands** → [references/termux-api.md](references/termux-api.md)
   - Any `termux-*` command, Android hardware interaction, storage symlinks.
 
-- **Shizuku / near-root** → [references/shizuku.md](references/shizuku.md)
-  - `rish`, uid=2000 shell, what shell elevation can and cannot do, SELinux.
 
 - **System & environment** → [references/system.md](references/system.md)
   - Repos, installed packages, CPU throttling, background execution limits.
