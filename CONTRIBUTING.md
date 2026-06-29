@@ -2,7 +2,7 @@
 
 Complete guide to creating, structuring, and installing a skill for the Antigravity agent platform.
 
-> For the full list of tools the agent can use inside skills, see [TOOL_REFERENCE.md](TOOL_REFERENCE.md).
+> For the full list of tools the agent can use inside skills, see [TOOL_REFERENCE.md](references/TOOL_REFERENCE.md).
 
 ---
 
@@ -469,7 +469,7 @@ Use `./install.sh --check` to see what would be symlinked without changing anyth
 
 ## 10. Update the README
 
-Add a row to the skill table in [`README.md`](../README.md):
+Add a row to the skill table in [`README.md`](README.md):
 
 ```markdown
 | **my-skill** | `/my-skill [args]` | Description of what it does. |

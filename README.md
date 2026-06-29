@@ -16,9 +16,9 @@ agyrc/
 │   └── termux-device/ # Device-specific Termux/Android reference
 ├── rules/             # Global agent behavior rules
 │   └── AGENTS.md      # Communication style, device info, ACL config
-├── docs/              # Guides and references
-│   ├── ADDING_SKILLS.md
+├── references/        # Platform reference docs
 │   └── TOOL_REFERENCE.md
+├── CONTRIBUTING.md    # Guide to adding new skills
 ├── install.sh         # Symlink installer
 ├── .gitignore
 └── README.md
@@ -78,7 +78,7 @@ cp rules/AGENTS.md ~/.agents/AGENTS.md
 
 ## Adding a New Skill
 
-See [`docs/ADDING_SKILLS.md`](docs/ADDING_SKILLS.md) for the full guide.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full guide.
 
 Quick version:
 
